@@ -1,0 +1,33 @@
+---
+- name: Define defaults and mandatory settings for the virtual network
+  set_fact:
+    ek_az_vnet_defaults: >
+      {{
+        {
+          'name': "{{ ek_config.environment.id }}_vnet"
+        }
+      }}
+    ek_az_vnet_mandatory: >
+      {{
+        {
+          'state': 'present',
+          'tags': {
+            'ek_env_id': '{{ ek_config.environment.id }}'
+          }
+        }
+      }}
+- name: Combine virtual network user settings with default and mandatory settings
+  set_fact:
+    ek_az_vnet_settings: "{{ ek_az_vnet_defaults | combine(ek_config.params.vnet | default({}), recursive=True) | combine(ek_az_vnet_mandatory, recursive=True) }}"
+- name: Inject resource group into virtual network settings
+  set_fact:
+    ek_az_vnet_settings: "{{ ek_az_vnet_defaults | combine({'resource_group': ek_ec2_rg_info.state.name}, recursive=True) }}"
+- debug:
+    verbosity: 1
+    var: ek_az_vnet_settings
+- name: Ensure the virtual network is present
+  azure_rm_virtualnetwork: "{{ ek_az_vnet_settings }}"
+  register: ek_az_vnet_info
+- debug:
+    verbosity: 1
+    var: ek_az_vnet_info

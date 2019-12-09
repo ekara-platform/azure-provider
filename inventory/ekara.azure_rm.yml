@@ -1,0 +1,34 @@
+---
+plugin: azure_rm
+
+include_vm_resource_groups:
+- ek_{{ .Model.QualifiedName }}
+
+keyed_groups:
+- key: tags.ek_nodeset_name
+  separator: _
+  prefix: ek_nodeset
+- key: tags.ek_role
+  separator: _
+  prefix: ek_role
+- key: tags | dict2items | json_query('[?starts_with(key, `ek_label_`)][key, value]') | map('join', '_') | list | replace('ek_label_', '')
+  separator: ""
+  prefix: ""
+
+compose:
+  ekara: >
+    {
+      'id': id,
+      'public_ip': public_ipv4_addresses[0],
+      'private_ip': private_ipv4_addresses[0],
+      'role': tags.ek_role,
+      'nodeset': tags.ek_nodeset_name,
+      'environment': tags.ek_env_id,
+      'provider': 'azure',
+      'labels': tags | dict2items | json_query('[?starts_with(key, `ek_label_`)]') | items2dict | replace('ek_label_', '') | from_yaml,
+      'proxy': {
+        'http_proxy': '{{ .Component.Proxy.Http }}',
+        'https_proxy': '{{ .Component.Proxy.Https }}',
+        'no_proxy': '{{ .Component.Proxy.NoProxy }}'
+      }
+    }

@@ -1,0 +1,20 @@
+---
+templates:
+- inventory/ekara.azure_rm.yml
+
+providers:
+  ek-azure:
+    params:
+      region: {{ .Vars.ekara.azure.region }}
+      vm:
+        # Latest Ubuntu server 18.04 LTS
+        image:
+          offer: UbuntuServer
+          publisher: Canonical
+          sku: '18.04-LTS'
+          version: latest
+    env:
+      AZURE_SUBSCRIPTION_ID: {{ .Vars.ekara.azure.auth.subscriptionId }}
+      AZURE_TENANT_ID: {{ .Vars.ekara.azure.auth.tenantId }}
+      AZURE_CLIENT_ID: {{ .Vars.ekara.azure.auth.clientId }}
+      AZURE_SECRET: {{ .Vars.ek.azure.auth.secret }}

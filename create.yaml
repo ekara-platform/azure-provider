@@ -1,0 +1,48 @@
+---
+- hosts: localhost
+  gather_facts: false
+
+  pre_tasks:
+  - name: Load configuration
+    include_role:
+      name: ekara.configuration
+
+  tasks:
+  - name: Provision Azure infrastructure
+    block:
+    - name: Create resource group
+      include_tasks: tasks/create/resource-group.yml
+
+    - name: Provision virtual network
+      include_tasks: tasks/create/vnet.yml
+
+#    - name: Provision security group(s)
+#      include_tasks: tasks/create/security-groups.yml
+#      when: (ek_config.params.securityGroups is defined) and (ek_config.params.securityGroups | length > 0)
+#
+#    - name: Provision instance(s)
+#      include_tasks: tasks/create/instances.yml
+#
+#    - name: Provision volume(s)
+#      include_tasks: tasks/create/volumes.yml
+#      when: ek_config.params.volumes is defined
+#
+#    - name: Determine role of instance(s)
+#      include_tasks: tasks/create/role-tags.yml
+#      when: ek_config.role is not defined
+#
+#  - name: Refresh inventory to gather new EC2 instance(s) if any
+#    meta: refresh_inventory
+#
+#- hosts: ek_nodeset_{{ hostvars['localhost'].ek_config.environment.nodeset }}
+#  gather_facts: true
+#
+#  tasks:
+#  - name: Enabling support for consistent nvme device mapping
+#    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+#    include_role:
+#      name: ekara.nvme
+#
+#  - name: Make filesystem(s) and mount volume(s)
+#    include_tasks: tasks/create/filesystems.yml
+#    when: hostvars['localhost'].ek_ec2_vol_info is defined

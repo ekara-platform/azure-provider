@@ -14,7 +14,12 @@ providers:
           sku: '18.04-LTS'
           version: latest
     env:
+      {{ if .Vars.ekara.azure.auth.user }}
+      AZURE_AD_USER: {{ .Vars.ekara.azure.auth.user }}
+      AZURE_PASSWORD: {{ .Vars.ekara.azure.auth.password }}
+      {{ else }}
       AZURE_SUBSCRIPTION_ID: {{ .Vars.ekara.azure.auth.subscriptionId }}
       AZURE_TENANT_ID: {{ .Vars.ekara.azure.auth.tenantId }}
       AZURE_CLIENT_ID: {{ .Vars.ekara.azure.auth.clientId }}
       AZURE_SECRET: {{ .Vars.ekara.azure.auth.secret }}
+      {{ endif }}

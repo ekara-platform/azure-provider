@@ -19,7 +19,18 @@
       ek_ssh_host: '*.azure.com'
       ek_ssh_user: 'ubuntu' # TODO: make this configurable and/or inspect the image to determine OS
 
-  - name: Install AWS modules with PIP
+  - name: Ensure the Azure config directory exists
+    file:
+      path: /root/.azure
+      state: directory
+
+  - name: Copy Azure CLI credentials
+    template:
+      src: templates/credentials
+      dest: /root/.azure/credentials
+      mode: 0600
+
+  - name: Install Azure modules with PIP
     become: true
     pip:
       state: present

@@ -18,3 +18,10 @@
       ek_ssh_key: "{{ ek_config.ssh.private_key }}"
       ek_ssh_host: '*.azure.com'
       ek_ssh_user: 'ubuntu' # TODO: make this configurable and/or inspect the image to determine OS
+
+  - name: Install AWS modules with PIP
+    become: true
+    pip:
+      state: present
+      name:
+      - azure==4.0.0

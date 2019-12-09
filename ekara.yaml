@@ -22,4 +22,4 @@ providers:
       AZURE_TENANT_ID: {{ .Vars.ekara.azure.auth.tenantId }}
       AZURE_CLIENT_ID: {{ .Vars.ekara.azure.auth.clientId }}
       AZURE_SECRET: {{ .Vars.ekara.azure.auth.secret }}
-      {{ endif }}
+      {{ end }}

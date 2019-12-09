@@ -25,4 +25,4 @@
       state: present
       name:
       - azure==4.0.0
-      - packaging=19.2
+      - packaging==19.2
